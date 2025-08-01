@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: jdbc:mysql://prod-db-endpoint:3306/user_profile
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate  # Or none
+    open-in-view: false
+
+
+aws:
+  s3:
+    accessKey: YOUR_ACCESS_KEY
+    secretKey: YOUR_SECRET_KEY
+    region: ap-south-1
+    endpoint: https://s3.ap-south-1.amazonaws.com
+    bucketName: sashel-bucket

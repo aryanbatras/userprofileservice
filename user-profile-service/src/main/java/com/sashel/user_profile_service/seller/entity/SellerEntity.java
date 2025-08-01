@@ -15,11 +15,14 @@ import lombok.Getter;
 )
 public class SellerEntity {
 
-    @OneToOne @MapsId @JoinColumn(name = "seller_id")
-    private UserEntity userEntity;
-
-    @Id @Column(name = "seller_id", length = 36)
+    @Id
+    @Column(name = "seller_id", length = 36)
     private String sellerId;
+
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "seller_id")
+    private UserEntity userEntity;
 
     @Column(length = 64)
     private String name;
@@ -55,6 +58,14 @@ public class SellerEntity {
     @Column(name = "is_active", columnDefinition = "boolean default true")
     private Boolean isActive;
 
-    @OneToOne(mappedBy = "sellerEntity", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "sellerEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private SellerEntityBrand sellerEntityBrand;
+    
+    @PrePersist
+    @PreUpdate
+    private void updateSellerId() {
+        if (userEntity != null) {
+            this.sellerId = userEntity.getUserId();
+        }
+    }
 }

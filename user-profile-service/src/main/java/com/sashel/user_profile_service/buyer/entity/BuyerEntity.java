@@ -10,17 +10,17 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Table(
-        name = "buyer",
-        indexes = @Index(columnList = "buyer_id")
-)
+@Table(name = "buyer")
 public class BuyerEntity {
 
-    @OneToOne @MapsId @JoinColumn(name = "buyer_id")
-    private UserEntity userEntity;
-
-    @Id @Column(name = "buyer_id", length = 36)
+    @Id
+    @Column(name = "buyer_id", length = 36)
     private String buyerId;
+
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "buyer_id")
+    private UserEntity userEntity;
 
     @Column(name = "name", length = 64)
     private String name;
@@ -40,4 +40,12 @@ public class BuyerEntity {
 
     @OneToMany(mappedBy = "buyerEntity", cascade = CascadeType.ALL)
     private List<BuyerEntityAddress> buyerAddressEntity;
+    
+    @PrePersist
+    @PreUpdate
+    private void updateBuyerId() {
+        if (userEntity != null) {
+            this.buyerId = userEntity.getUserId();
+        }
+    }
 }

@@ -1,21 +1,19 @@
 package com.sashel.user_profile_service.seller.service;
 
-import com.sashel.user_profile_service.buyer.entity.BuyerEntity;
-import com.sashel.user_profile_service.buyer.specification.BuyerSpecification;
 import com.sashel.user_profile_service.seller.dto.request.SellerRequestDto;
 import com.sashel.user_profile_service.seller.dto.request.SellerRequestDtoStatus;
 import com.sashel.user_profile_service.seller.dto.response.SellerResponseDto;
+import com.sashel.user_profile_service.seller.entity.SellerEntity;
 import com.sashel.user_profile_service.seller.mapper.SellerMapper;
 import com.sashel.user_profile_service.seller.repository.SellerRepository;
-import com.sashel.user_profile_service.seller.entity.SellerEntity;
 import com.sashel.user_profile_service.seller.specification.SellerSpecification;
 import com.sashel.user_profile_service.user.entity.UserEntity;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
 
 import java.sql.Date;
 
@@ -25,12 +23,18 @@ public class SellerService {
     @Autowired
     SellerRepository sellerRepository;
 
+    @Autowired
+    SellerServiceBrand sellerServiceBrand;
+
     // TODO: to create seller and set email
     public void createSeller(UserEntity userEntity, String userEmail) {
         SellerEntity sellerEntity = new SellerEntity();
         sellerEntity.setUserEntity(userEntity);
         sellerEntity.setEmail(userEmail);
         sellerRepository.save(sellerEntity);
+
+        // create seller's brand as well
+        sellerServiceBrand.createBrand(sellerEntity.getSellerId());
     }
 
     // TODO: to get paginated and filtered list of sellers

@@ -14,11 +14,14 @@ import lombok.Setter;
 )
 public class AdminEntity {
 
-    @OneToOne @MapsId @JoinColumn(name = "admin_id")
-    private UserEntity userEntity;
-
-    @Id @Column(name = "admin_id", length = 36)
+    @Id
+    @Column(name = "admin_id", length = 36)
     private String adminId;
+
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "admin_id")
+    private UserEntity userEntity;
 
     @Column(name = "name", length = 64)
     private String name;
@@ -32,4 +35,12 @@ public class AdminEntity {
 
     @Column(name = "last_login_at")
     private java.sql.Date lastLoginAt;
+    
+    @PrePersist
+    @PreUpdate
+    private void updateAdminId() {
+        if (userEntity != null) {
+            this.adminId = userEntity.getUserId();
+        }
+    }
 }

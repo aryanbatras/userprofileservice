@@ -12,13 +12,14 @@ import lombok.Setter;
 @Builder
 public class BuyerEntityAddress {
 
-    @ManyToOne @JoinColumn(name = "buyer_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "buyer_id", referencedColumnName = "buyer_id", insertable = false, updatable = false)
     private BuyerEntity buyerEntity;
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long addressId;
-
-    @Column(length = 36, nullable = false)
+    
+    @Column(name = "buyer_id", length = 36)
     private String buyerId;
 
     private Integer pincode;

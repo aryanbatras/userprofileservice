@@ -12,23 +12,26 @@ import java.net.URI;
 
 @Configuration
 public class S3Configuration {
-    @Value("${minio.url}")
+
+    @Value("${aws.s3.url}")
     private String url;
 
-    @Value("${minio.accessKey}")
+    @Value("${aws.s3.accessKey}")
     private String accessKey;
 
-    @Value("${minio.secretKey}")
+    @Value("${aws.s3.secretKey}")
     private String secretKey;
+
+    @Value("${aws.s3.region}")
+    private String region;
 
     @Bean
     public S3Client s3Client() {
         return S3Client.builder()
                 .endpointOverride(URI.create(url))
-                .region(Region.AP_SOUTH_1)
+                .region(Region.of(region))
                 .credentialsProvider(StaticCredentialsProvider.create(
                         AwsBasicCredentials.create(accessKey, secretKey)))
-                .forcePathStyle(true)
                 .build();
     }
 }

@@ -31,7 +31,7 @@ public class UserService {
     ) {
 
         var userEntityByFirebaseUUID =
-                userRepository.findByFirebaseUUID(firebaseUUID);
+                userRepository.findById(firebaseUUID);
 
         // if firebase uuid exists then return ok response
         if (userEntityByFirebaseUUID.isPresent()) {

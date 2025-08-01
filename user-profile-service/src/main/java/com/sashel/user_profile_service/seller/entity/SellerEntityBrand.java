@@ -2,19 +2,24 @@ package com.sashel.user_profile_service.seller.entity;
 
 import com.sashel.user_profile_service.seller.enums.ReviewStatusEnum;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class SellerEntityBrand {
 
-    @OneToOne @MapsId @JoinColumn(name = "brand_id")
-    private SellerEntity sellerEntity;
-
-    @Id @Column(name = "brand_id", length = 36, nullable = false)
+    @Id
+    @Column(name = "brand_id", length = 36, nullable = false)
     private String brandId;
+
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "brand_id")
+    private SellerEntity sellerEntity;
 
     @Column(name = "brand_logo", length = 255)
     private String brandLogo;
@@ -43,9 +48,41 @@ public class SellerEntityBrand {
 
     private Float avgRating;
 
-    @Column(name = "kyc_verified",
+    private String contactPhone;
+
+    private String emergencyContact;
+
+    @Column(name = "is_pan_verified",
             columnDefinition = "boolean default false")
-    private Boolean kycVerified;
+    private Boolean panVerified;
+
+    @Column(name = "is_gst_verified",
+            columnDefinition = "boolean default false")
+    private Boolean gstVerified;
+
+    @Column(name = "is_aadhaar_verified",
+            columnDefinition = "boolean default false")
+    private Boolean aadhaarVerified;
+
+    @Column(name = "is_bank_verified",
+            columnDefinition = "boolean default false")
+    private Boolean bankVerified;
+
+    @Column(name = "is_address_proof_verified",
+            columnDefinition = "boolean default false")
+    private Boolean addressVerified;
+
+    private String reviewComments;
+
+    private Boolean isReviewed;
+    
+    @PrePersist
+    @PreUpdate
+    private void updateBrandId() {
+        if (sellerEntity != null) {
+            this.brandId = sellerEntity.getSellerId();
+        }
+    }
 
     @Enumerated(EnumType.STRING)
     @Column(name = "review_status")

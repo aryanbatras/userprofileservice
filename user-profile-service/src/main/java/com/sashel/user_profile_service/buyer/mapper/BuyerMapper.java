@@ -6,7 +6,7 @@ import com.sashel.user_profile_service.buyer.entity.BuyerEntity;
 public class BuyerMapper {
     public static BuyerResponseDto mapBuyerEntityToBuyerResponseDto(BuyerEntity e) {
         return BuyerResponseDto.builder()
-                .buyerId(e.getBuyerId())
+                .buyerId(e.getUserEntity().getUserId())
                 .name(e.getName())
                 .phone(e.getPhone())
                 .dob(e.getDob().toLocalDate( ))

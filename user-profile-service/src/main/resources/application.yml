@@ -1,27 +1,24 @@
-eureka:
-  client:
-    enabled: false
-security:
-  enabled: false
 spring:
-  application:
-    name: user-profile-service
-  cloud:
-    config:
-      enabled: false
-    discovery:
-      enabled: false
+  profiles:
+    active: dev  # default profile
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
 logging:
   level:
     root: INFO
     com.sashel: INFO
   file:
-    name: logs/app.log  # File path (relative to  project root or absolute)
+    name: logs/app.log
   pattern:
     file: "%d{yyyy-MM-dd HH:mm:ss.SSS}[%-5level][%logger{36}.%M]%n    ➤ Input  : %replace(%msg){'\n','\n               '}%n"
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS}[%-5level][%logger{36}.%M]%n    ➤ Input  : %replace(%msg){'\n','\n               '}%n"
-    json: "%d{yyyy-MM-dd HH:mm:ss.SSS}[%-5level][%logger{36}.%M]%n    ➤ Input  : %msg%n"
 
 springdoc:
   api-docs:
@@ -31,11 +28,20 @@ springdoc:
     path: /swagger-ui.html
     enabled: true
 
-minio:
-  url: http://127.0.0.1:9000
-  access-key: minioadmin
-  secret-key: minioadmin
-  bucket: dev
+aws:
+  s3:
+    bucket: sashel-prod
+    region: ap-south-1
+    access-key: ${AWS_ACCESS_KEY}
+    secret-key: ${AWS_SECRET_KEY}
+    url: https://s3.ap-south-1.amazonaws.com
+  sns:
+    region: ap-south-1
+    topic-arn: arn:aws:sns:ap-south-1:123456789012:USER_PROFILE_TOPIC
+
+authbridge:
+  api-key: dummy123
+  base-url: https://authbridge.com
 
 interceptor:
 
@@ -113,15 +119,31 @@ interceptor:
       method: POST
       roles: [SELLER]
 
-    - pattern: /api/userprofile/seller/*/brand-info
-      method: GET
-      roles: [ADMIN, SELLER, BUYER]
-
-    - pattern: /api/userprofile/seller/*/brand-info
+    - pattern: /api/userprofile/seller/*/kyc-verify/pan
       method: POST
       roles: [SELLER]
 
-    - pattern: /api/userprofile/seller/*/brand-info
+    - pattern: /api/userprofile/seller/*/kyc-verify/aadhar
+      method: POST
+      roles: [SELLER]
+
+    - pattern: /api/userprofile/seller/*/kyc-verify/gst
+      method: POST
+      roles: [SELLER]
+
+    - pattern: /api/userprofile/seller/*/kyc-verify/bank
+      method: POST
+      roles: [SELLER]
+
+    - pattern: /api/userprofile/seller/*/kyc-verify/address
+      method: POST
+      roles: [SELLER]
+
+    - pattern: /api/userprofile/seller/*/brand-kyc
+      method: GET
+      roles: [SELLER]
+
+    - pattern: /api/userprofile/seller/*/brand-status
       method: PUT
       roles: [SELLER]
 
@@ -129,4 +151,14 @@ interceptor:
       method: POST
       roles: [SELLER]
 
+    - pattern: /api/userprofile/seller/*/brand-info
+      method: PUT
+      roles: [SELLER]
 
+    - pattern: /api/userprofile/seller/*/brand-reviewed
+      method: PUT
+      roles: [ADMIN]
+
+    - pattern: /api/userprofile/seller/*/brand-info
+      method: GET
+      roles: [ADMIN, SELLER, BUYER]

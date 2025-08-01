@@ -1,6 +1,8 @@
 package com.sashel.user_profile_service.seller.controller;
 
 import com.sashel.user_profile_service.seller.dto.request.SellerRequestDtoBrand;
+import com.sashel.user_profile_service.seller.dto.request.SellerRequestDtoBrandReview;
+import com.sashel.user_profile_service.seller.dto.request.SellerRequestDtoBrandStatus;
 import com.sashel.user_profile_service.seller.dto.response.SellerResponseDtoBrand;
 import com.sashel.user_profile_service.seller.service.SellerServiceBrand;
 import com.sashel.user_profile_service.utility.service.S3Service;
@@ -21,6 +23,29 @@ public class SellerControllerBrand {
     @Autowired
     S3Service s3Service;
 
+    @PutMapping("/{sellerId}/brand-reviewed")
+    // TODO: To let admin approve or reject seller's brand
+    public ResponseEntity<Boolean> reviewBrandByAdmin(
+            @PathVariable String sellerId,
+            @RequestBody SellerRequestDtoBrandReview sellerRequestDtoBrandReview
+            ) {
+        return ResponseEntity.ok().body(
+                sellerServiceBrand.reviewBrandByAdmin(sellerId, sellerRequestDtoBrandReview)
+        );
+    }
+
+
+    @PutMapping("/{sellerId}/brand-status")
+    // TODO: Update seller's review status
+    public ResponseEntity<Boolean> updateBrandKycDetails(
+            @PathVariable String sellerId,
+            @RequestBody SellerRequestDtoBrandStatus sellerRequestDtoBrandStatus
+    ) {
+        return ResponseEntity.ok().body(
+                sellerServiceBrand.updateBrandStatus(sellerId, sellerRequestDtoBrandStatus)
+        );
+    }
+
     @GetMapping("/{sellerId}/brand-info")
     // TODO: Return seller's brand info
     public ResponseEntity<SellerResponseDtoBrand> getBrandInfo(
@@ -28,17 +53,6 @@ public class SellerControllerBrand {
     ) {
         return ResponseEntity.ok().body(
                 sellerServiceBrand.getBrandInfo(sellerId)
-        );
-    }
-
-    @PostMapping("/{sellerId}/brand-info")
-    // TODO: Create seller's brand info
-    public ResponseEntity<SellerResponseDtoBrand> createBrandInfo(
-            @PathVariable String sellerId,
-            @RequestBody SellerRequestDtoBrand sellerRequestDtoBrand
-    ) {
-        return ResponseEntity.ok().body(
-                sellerServiceBrand.createBrandInfo(sellerId, sellerRequestDtoBrand)
         );
     }
 
