@@ -1,0 +1,132 @@
+eureka:
+  client:
+    enabled: false
+security:
+  enabled: false
+spring:
+  application:
+    name: user-profile-service
+  cloud:
+    config:
+      enabled: false
+    discovery:
+      enabled: false
+
+logging:
+  level:
+    root: INFO
+    com.sashel: INFO
+  file:
+    name: logs/app.log  # File path (relative to  project root or absolute)
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS}[%-5level][%logger{36}.%M]%n    ➤ Input  : %replace(%msg){'\n','\n               '}%n"
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS}[%-5level][%logger{36}.%M]%n    ➤ Input  : %replace(%msg){'\n','\n               '}%n"
+    json: "%d{yyyy-MM-dd HH:mm:ss.SSS}[%-5level][%logger{36}.%M]%n    ➤ Input  : %msg%n"
+
+springdoc:
+  api-docs:
+    path: /api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+
+minio:
+  url: http://127.0.0.1:9000
+  access-key: minioadmin
+  secret-key: minioadmin
+  bucket: dev
+
+interceptor:
+
+  buyer-access-rules:
+
+    - pattern: /api/userprofile/buyer/buyers/**
+      method: GET
+      roles: [ADMIN]
+
+    - pattern: /api/userprofile/buyer/**
+      method: GET
+      roles: [BUYER, ADMIN]
+
+    - pattern: /api/userprofile/buyer/**
+      method: PUT
+      roles: [BUYER]
+
+    - pattern: /api/userprofile/buyer/*/status
+      method: PUT
+      roles: [BUYER]
+
+    - pattern: /api/userprofile/buyer/*/addresses
+      method: GET
+      roles: [BUYER, SELLER, ADMIN]
+
+    - pattern: /api/userprofile/buyer/*/addresses
+      method: POST
+      roles: [BUYER]
+
+    - pattern: /api/userprofile/buyer/*/addresses/*
+      method: PUT
+      roles: [BUYER]
+
+    - pattern: /api/userprofile/buyer/*/addresses/*
+      method: DELETE
+      roles: [BUYER]
+
+  admin-access-rules:
+
+    - pattern: /api/userprofile/admin/admins/**
+      method: GET
+      roles: [ADMIN]
+
+    - pattern: /api/userprofile/admin/**
+      method: GET
+      roles: [ADMIN]
+
+    - pattern: /api/userprofile/admin/**
+      method: PUT
+      roles: [ADMIN]
+
+    - pattern: /api/userprofile/admin/*/status
+      method: PUT
+      roles: [ADMIN]
+
+  seller-access-rules:
+
+    - pattern: /api/userprofile/seller/sellers/**
+      method: GET
+      roles: [ADMIN]
+
+    - pattern: /api/userprofile/seller/**
+      method: GET
+      roles: [ADMIN, SELLER]
+
+    - pattern: /api/userprofile/seller/**
+      method: PUT
+      roles: [SELLER]
+
+    - pattern: /api/userprofile/seller/*/status
+      method: PUT
+      roles: [ADMIN, SELLER]
+
+    - pattern: /api/userprofile/seller/*/post-image
+      method: POST
+      roles: [SELLER]
+
+    - pattern: /api/userprofile/seller/*/brand-info
+      method: GET
+      roles: [ADMIN, SELLER, BUYER]
+
+    - pattern: /api/userprofile/seller/*/brand-info
+      method: POST
+      roles: [SELLER]
+
+    - pattern: /api/userprofile/seller/*/brand-info
+      method: PUT
+      roles: [SELLER]
+
+    - pattern: /api/userprofile/seller/*/brand-logo
+      method: POST
+      roles: [SELLER]
+
+

@@ -1,0 +1,104 @@
+REMEMBER THESE REQUIREMENTS FOR OUR MICROSERVICES ARCHITECTUE
+
+FUNCTIONAL REQUIREMENTS OF USER PROFILE SERVICE
+
+Primary Responsibility: Manages profile lifecycle and role-based identity after user is authenticated by Firebase
+
+User to be created after first time authentication based on user role Or user to be logged in after authentication if account already exists
+
+To be shown all user information based on role when profile is clicked
+
+To give ability to update information on its profile
+
+Service Based Requirements
+
+Admin Service
+Register Login
+Update fetch deactivate
+
+Needs to have access limitations like ip address lock.
+Let admin login safely and securly through the dashboard.
+Logs will be there on any updates by admin regarding the sellers (approve or reject, deactivate or reactivate)
+
+Seller Service
+
+Has to complete its profile in stages. The data is stored in db for every stage. But once all stages are complete, the seller profile response is sent. And seller account is sent for review to admin. Now seller has to wait 3 to 4 days for approval.
+Seller’s kyc details has to be approved via third party like gst, pan, and business details like form c, and till then seller has to wait as well.
+Seller dashboard can only be accessed once the profile is 100% complete and approved as well by the admin. If admin rejects, then seller has to update profile and send request again.
+Seller can update business details again, but it’d again require review from admin and a waiting time of 3 to 4 days.
+There is going to be a compliance time shown to seller clearly on the seller dashboard.
+When buyer wants to get the seller information, it is related to brand only, like business name, address, description, logo, best selling sku, total reviews and avg rating.
+When admin tries to get seller information, it’ll see everything, but cannot update or delete it. (to avoid inconsistency).
+Admin can deactivate seller account and reactivate seller account any time if seller violates our policy.
+
+
+Buyer Service
+
+The phone number and buyer id are linked and created when user authenticates first time. Also it’ll be fetched primarily after login.
+Buyer can update its data using put or patch in profile settings when it clicks on update button.
+Admin can get the buyer details based on some filters like location, gender, dob along with pagination.
+Buyer will have primary address with many address attributes. And buyer can also have many other addresses.
+Buyer can also deactivate or reactivate the account as per their choice only if there are no active orders currently.
+
+
+EDGE CASES
+
+Once the role has been assigned, do not let a buyer account access seller dashboard even if they try to login from the seller endpoint, and do not let a seller account access buyer dashboard even if they try to login from the buyer endpoint. Admin case will not arise since it’s ip address or device restricted. (Managed by frontend, no worries)
+Suppose multiple devices login at the same time. What would happen then? (Confusing)
+Suppose seller tries to edit business details while admin is reviewing. That cannot happen. Once the review is sent. Edit is locked until review is done. (Ofcourse)
+If buyer has not completed its profile or has entered wrong pincode and forcefully tries to access the dashboard before profile completion. (We let buyer do what it wants until order is being placed)
+Seller tries to send fake business information, fake pan/gst, or tries to access dashboard endpoint without profile completion. (Managed by third party)
+Suppose admin has rejected the review of seller, now seller has to do the changes, and send request again. The comments, logs, review, everything has to be done again.
+Since admin is also a part of profile service. Too many buyers/sellers being loaded for admin can slow down the profile service for buyers and sellers. (Think of Pagination)
+Admin can also login through a secret key on a special and long endpoint since that can used for emergency when not at the place of ip address and also not using the registered device. (Will think later)
+
+
+API ENDPOINTS
+
+Global: /api/userprofile
+
+	User
+Resource: /user
+
+POST 	/login
+
+Buyer
+Resource: /buyer
+
+	GET		/buyers
+GET 	/{buyerId}
+PUT		/{buyerId}
+PATCH 	/{buyerId}/address
+PATCH 	/{buyerId}/isactive
+
+Seller
+Resource: /seller
+
+	GET		/sellers
+GET 	/{sellerId}
+GET 	/{sellerId}/kyc-info
+GET 	/{sellerId}/brand-info
+GET 	/{sellerId}/profile-progress
+POST 	/{sellerId}/business-details
+PATCH 	/{sellerId}/business-details
+PATCH 	/{sellerId}/status
+PATCH	/{sellerId}/isactive
+
+
+Admin
+Resource: /admin
+
+GET 	/admins
+GET 	/{adminId}
+	POST	/{adminId}
+	PATCH	/{adminId}
+
+
+Non Functional Requirements
+
+Low Latency
+Stateless Arch
+Horizontal scalable
+Secure for admin
+
+

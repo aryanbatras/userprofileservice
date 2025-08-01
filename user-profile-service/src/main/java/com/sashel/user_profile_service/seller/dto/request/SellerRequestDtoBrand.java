@@ -1,0 +1,21 @@
+package com.sashel.user_profile_service.seller.dto.request;
+
+import lombok.*;
+
+@Data
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class SellerRequestDtoBrand {
+    private String brandName;
+    private String brandDescription;
+    private Integer pincode;
+    private String city;
+    private String state;
+    private String country;
+    private String landmark;
+    private Integer totalReviews;
+    private Float avgRating;
+}
